@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Princesse du Sahel 🌸✨</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@400;600;700&display=swap');
+
+        * {
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #ffeef2 0%, #ffdbde 100%);
+            font-family: 'Quicksand', sans-serif;
+            text-align: center;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Cartes d'étapes */
+        .card {
+            background: rgba(255, 255, 255, 0.94);
+            backdrop-filter: blur(10px);
+            padding: 35px 25px;
+            border-radius: 30px;
+            box-shadow: 0 15px 35px rgba(255, 105, 135, 0.25);
+            max-width: 480px;
+            width: 100%;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            animation: fadeIn 0.5s ease-in-out forwards;
+            position: relative;
+            z-index: 10;
+            border: 2px solid rgba(255, 255, 255, 0.7);
+        }
+
+        .card.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* Titres & Textes */
+        h1 {
+            font-family: 'Pacifico', cursive;
+            color: #ff4d6d;
+            font-size: 2rem;
+            margin-top: 10px;
+            margin-bottom: 15px;
+            line-height: 1.3;
+        }
+
+        p {
+            color: #444;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            font-weight: 600;
+        }
+
+        /* Illustrations */
+        .cute-img {
+            width: 130px;
+            height: auto;
+            margin-bottom: 15px;
+            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.1));
+        }
+
+        /* Boutons */
+        .btn-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 100%;
+            position: relative;
+        }
+
+        .btn-row {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            width: 100%;
+            position: relative;
+            min-height: 65px;
+        }
+
+        button {
+            background: linear-gradient(135deg, #ff4d6d 0%, #ff758f 100%);
+            color: white;
+            border: none;
+            padding: 16px 28px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(255, 77, 109, 0.35);
+            transition: all 0.2s ease;
+            font-family: 'Quicksand', sans-serif;
+            width: 100%;
+        }
+
+        button:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 12px 25px rgba(255, 77, 109, 0.5);
+        }
+
+        /* Style spécifique pour le bouton Non */
+        #noBtn {
+            background: #f0f0f0;
+            color: #666;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            position: absolute;
+            right: 0;
+            width: auto;
+            padding: 16px 20px;
+        }
+
+        #yesBtn {
+            position: absolute;
+            left: 0;
+            width: auto;
+            padding: 16px 20px;
+        }
+
+        /* Boîte de Tarifs & Conditions */
+        .pricing-box {
+            background: #fff0f3;
+            border: 2px dashed #ff758f;
+            border-radius: 20px;
+            padding: 15px;
+            width: 100%;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .pricing-title {
+            font-weight: 700;
+            color: #ff4d6d;
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .pricing-item {
+            font-size: 0.95rem;
+            color: #555;
+            margin-bottom: 6px;
+        }
+
+        .social-tag {
+            background: #ff4d6d;
+            color: white;
+            padding: 10px 18px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            display: inline-block;
+            margin-top: 10px;
+            box-shadow: 0 5px 15px rgba(255, 77, 109, 0.3);
+        }
+
+        /* Cœurs / Pétales flottants */
+        .floating-heart {
+            position: fixed;
+            bottom: -50px;
+            font-size: 24px;
+            opacity: 0.6;
+            pointer-events: none;
+            z-index: 1;
+            animation: floatUp 7s linear infinite;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0.7; }
+            100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Écran 1 -->
+    <div class="card active" id="step1">
+        <img src="https://upload.wikimedia.org/wikipedia/en/thumb/0/05/Hello_Kitty_character_image.png/180px-Hello_Kitty_character_image.png" class="cute-img" alt="Hello Kitty">
+        <h1>Coucou toi... 🌸✨</h1>
+        <p>Avez-vous envie de déclarer votre flamme à la personne que vous aimez d'une manière unique et inoubliable ? 🥹💖</p>
+        <div class="btn-container">
+            <button onclick="nextStep(2)">Oui, tellement ! 😫❤️</button>
+        </div>
+    </div>
+
+    <!-- Écran 2 -->
+    <div class="card" id="step2">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Tuxedo_Sam_character_image.png/180px-Tuxedo_Sam_character_image.png" class="cute-img" alt="Cute">
+        <h1>Mais vous ne savez pas comment vous y prendre ? 🤭</h1>
+        <p>Vous avez peur que ce soit banal, ou vous voulez simplement faire briller ses yeux et lui faire faire un grand sourire ? 🧸✨</p>
+        <div class="btn-container">
+            <button onclick="nextStep(3)">C'est exactement ça... 🤫💕</button>
+        </div>
+    </div>
+
+    <!-- Écran 3 : Démonstration du bouton qui fuit -->
+    <div class="card" id="step3">
+        <h1>Imaginez sa réaction... 🙈</h1>
+        <p>Un mini-site interactif avec ses prénoms, vos anecdotes, et même un bouton "Non" impossible à cliquer ! 😂<br><br>Faites le test juste en dessous 👇</p>
+        <div class="btn-row">
+            <button id="yesBtn" onclick="nextStep(4)">💖 Oui, j'adore !</button>
+            <button id="noBtn" onmouseover="dodgeNo()" onclick="dodgeNo()">🤭 Non merci</button>
+        </div>
+    </div>
+
+    <!-- Écran 4 : La Solution Miracle -->
+    <div class="card" id="step4">
+        <img src="https://upload.wikimedia.org/wikipedia/en/thumb/0/05/Hello_Kitty_character_image.png/180px-Hello_Kitty_character_image.png" class="cute-img" alt="Solution Miracle">
+        <h1>J'ai la solution miracle ! 🎉✨</h1>
+        <p>Je crée pour vous un **lien personnalisé web** ultra mignon, stylé et interactif à lui envoyer par message ! 💌</p>
+
+        <!-- Tarifs & Offres -->
+        <div class="pricing-box">
+            <div class="pricing-title">💎 Nos Offres & Tarifs :</div>
+            <div class="pricing-item">🌸 **Pack Standard (2 000 FCFA)** : Mini-site personnalisé (Prénoms, messages secrets, bouton piégé, musique au choix).</div>
+            <div class="pricing-item" style="margin-top: 8px;">👑 **Pack VIP (3 500 FCFA)** : Pack Standard + Code secret à débloquer + Quiz personnalisé sur votre couple/rencontre !</div>
+        </div>
+
+        <!-- Conditions -->
+        <div class="pricing-box" style="border-color: #ffb7c5; background: #fff9fa;">
+            <div class="pricing-title">📋 Conditions de commande :</div>
+            <div class="pricing-item">1. Remplissez le petit formulaire d'idées que je vous enverrai.</div>
+            <div class="pricing-item">2. Pas besoin de photos/vidéos privées : tout se fait par messages et anecdotes !</div>
+            <div class="pricing-item">3. Livraison ultra rapide de votre lien (en moins de 24h) ! ⚡</div>
+        </div>
+
+        <p style="margin-bottom: 10px;">Prêt(e) à surprendre votre crush ou votre partenaire ? 🥰</p>
+        <p style="font-size: 0.95rem; color: #ff4d6d; margin-bottom: 15px;">Contactez-moi directement sur TikTok ou Instagram :</p>
+
+        <div class="social-tag">
+            📲 @la_princesse_du_sahel
+        </div>
+    </div>
+
+    <script>
+        // Cœurs / Pétales
+        const hearts = ['💖', '🌸', '✨', '🎀', '🧸', '💕'];
+        for (let i = 0; i < 15; i++) {
+            const h = document.createElement('div');
+            h.className = 'floating-heart';
+            h.innerText = hearts[Math.floor(Math.random() * hearts.length)];
+            h.style.left = Math.random() * 100 + 'vw';
+            h.style.animationDelay = Math.random() * 5 + 's';
+            h.style.animationDuration = (Math.random() * 3 + 4) + 's';
+            document.body.appendChild(h);
+        }
+
+        function nextStep(stepNumber) {
+            document.querySelectorAll('.card').forEach(card => card.classList.remove('active'));
+            document.getElementById('step' + stepNumber).classList.add('active');
+        }
+
+        // Esquive du bouton "Non"
+        let dodgeCount = 0;
+        function dodgeNo() {
+            const noBtn = document.getElementById('noBtn');
+            dodgeCount++;
+
+            if (dodgeCount < 3) {
+                const x = Math.random() * (window.innerWidth - noBtn.offsetWidth - 40);
+                const y = Math.random() * (window.innerHeight - noBtn.offsetHeight - 40);
+                noBtn.style.position = 'fixed';
+                noBtn.style.left = x + 'px';
+                noBtn.style.top = y + 'px';
+            } else {
+                noBtn.innerText = "Mmmh... Oui ! 😌💕";
+                noBtn.style.background = "linear-gradient(135deg, #ff4d6d 0%, #ff758f 100%)";
+                noBtn.style.color = "white";
+                noBtn.onclick = function() { nextStep(4); };
+            }
+        }
+    </script>
+</body>
+</html>
