@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mini RPG</title>
+
+<style>
+body{
+    margin:0;
+    background:#1b1230;
+    color:white;
+    font-family:Arial,sans-serif;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+
+#jeu{
+    width:350px;
+    background:#2b1f47;
+    border:3px solid #ff5fa2;
+    border-radius:15px;
+    padding:20px;
+}
+
+#perso{
+    font-size:60px;
+    text-align:center;
+}
+
+#dialogue{
+    background:#120a22;
+    padding:15px;
+    border-radius:10px;
+    margin:15px 0;
+    min-height:80px;
+}
+
+button{
+    width:100%;
+    margin-top:10px;
+    padding:12px;
+    border:none;
+    border-radius:8px;
+    background:#ff5fa2;
+    color:white;
+    font-size:16px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#ff2f87;
+}
+</style>
+</head>
+
+<body>
+
+<div id="jeu">
+
+<div id="perso">👸</div>
+
+<h2>Princesse du Sahel</h2>
+
+<div id="dialogue">
+Bienvenue, aventurier ! Veux-tu découvrir ma quête ?
+</div>
+
+<button onclick="suite()">Continuer ▶</button>
+
+</div>
+
+<script>
+
+let etape=0;
+
+function suite(){
+
+etape++;
+
+if(etape==1){
+document.getElementById("dialogue").innerHTML=
+"✨ Je crée des liens web personnalisés.<br><br>Pack Standard : 2 500 FCFA<br>Pack VIP : 4 500 FCFA";
+}
+
+else if(etape==2){
+document.getElementById("dialogue").innerHTML=
+"⚔️ Acceptes-tu cette quête ?";
+document.querySelector("button").innerHTML="Oui !";
+}
+
+else{
+document.getElementById("dialogue").innerHTML=
+"🎉 Merci ! Contacte-moi sur Instagram ou TikTok pour commander.";
+document.querySelector("button").innerHTML="Recommencer";
+document.querySelector("button").onclick=function(){
+location.reload();
+}
+}
+
+}
+
+</script>
+
+</body>
+</html>
