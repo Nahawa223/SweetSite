@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Une surprise pour toi ! ✨</title>
     
-    <!-- Confettis pour la fin -->
+    <!-- Animation Confettis -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     
     <style>
@@ -27,7 +27,7 @@
             padding: 20px;
         }
 
-        /* --- ANIMATION DES PETALES & COEURS --- */
+        /* --- ÉLÉMENTS FLOTTANTS EN ARRIÈRE-PLAN --- */
         .floating-element {
             position: absolute;
             top: -10px;
@@ -46,7 +46,7 @@
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
             border-radius: 24px;
-            padding: 30px;
+            padding: 35px 25px;
             width: 100%;
             max-width: 400px;
             box-shadow: 0 15px 35px rgba(255, 105, 180, 0.25);
@@ -63,41 +63,47 @@
         }
 
         @keyframes popIn {
-            0% { opacity: 0; transform: scale(0.5); }
+            0% { opacity: 0; transform: scale(0.6); }
             100% { opacity: 1; transform: scale(1); }
         }
 
-        /* --- PERSONNAGE MANGA CHIBI (SVG ANIME) --- */
-        .chibi-avatar {
-            width: 160px;
-            height: 160px;
-            margin: 0 auto 15px auto;
-            display: block;
-            animation: float 3s ease-in-out infinite;
-            filter: drop-shadow(0 8px 12px rgba(0,0,0,0.12));
+        /* --- EMOJI EN TÊTE --- */
+        .header-emoji {
+            font-size: 4rem;
+            margin-bottom: 15px;
+            display: inline-block;
+            animation: bounce 2s infinite ease-in-out;
         }
 
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-12px); }
-            100% { transform: translateY(0px); }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
         }
 
         /* --- TYPOGRAPHIE --- */
         h2 {
             color: #d63384;
             margin-bottom: 12px;
-            font-size: 1.4rem;
+            font-size: 1.5rem;
+            font-weight: 700;
         }
 
         p {
-            color: #555;
-            font-size: 1rem;
+            color: #444;
+            font-size: 1.05rem;
             line-height: 1.6;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
 
-        /* --- BOUTONS DYNAMIQUES --- */
+        .price-box {
+            background: rgba(255, 240, 245, 0.8);
+            border-radius: 16px;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px dashed #ff79b0;
+        }
+
+        /* --- BOUTONS --- */
         .btn-group {
             display: flex;
             gap: 15px;
@@ -111,7 +117,7 @@
             background: linear-gradient(45deg, #ff4081, #ff79b0);
             color: white;
             border: none;
-            padding: 12px 24px;
+            padding: 14px 28px;
             font-size: 1rem;
             font-weight: bold;
             border-radius: 50px;
@@ -150,83 +156,32 @@
 </head>
 <body>
 
-    <!-- ETAPE 1 -->
+    <!-- ÉTAPE 1 -->
     <div class="card active" id="step1">
-        <!-- SVG Avatar Anime integré directement -->
-        <svg class="chibi-avatar" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="100" cy="100" r="90" fill="#ffd1dc"/>
-            <!-- Cheveux arrière -->
-            <path d="M 50 120 Q 30 160 60 180 Q 100 190 140 180 Q 170 160 150 120 Z" fill="#2c1d11"/>
-            <!-- Visage -->
-            <circle cx="100" cy="105" r="55" fill="#8d5524"/>
-            <!-- Yeux Chibi Manga -->
-            <ellipse cx="80" cy="100" rx="9" ry="12" fill="#1a0d00"/>
-            <ellipse cx="120" cy="100" rx="9" ry="12" fill="#1a0d00"/>
-            <!-- Reflets Yeux -->
-            <circle cx="78" cy="96" r="3" fill="#ffffff"/>
-            <circle cx="118" cy="96" r="3" fill="#ffffff"/>
-            <!-- Joues roses -->
-            <ellipse cx="72" cy="112" rx="7" ry="4" fill="#ff6b81" opacity="0.6"/>
-            <ellipse cx="128" cy="112" rx="7" ry="4" fill="#ff6b81" opacity="0.6"/>
-            <!-- Sourire -->
-            <path d="M 92 118 Q 100 126 108 118" stroke="#1a0d00" stroke-width="3" stroke-linecap="round" fill="none"/>
-            <!-- Cheveux Bangs -->
-            <path d="M 45 95 Q 70 60 100 80 Q 130 60 155 95 Q 100 65 45 95 Z" fill="#2c1d11"/>
-            <!-- Noeud / Fleur -->
-            <circle cx="140" cy="70" r="12" fill="#ff4081"/>
-            <circle cx="140" cy="70" r="5" fill="#fff"/>
-        </svg>
-
-        <h2>Coucou toi ! ✨</h2>
+        <div class="header-emoji">✨💌</div>
+        <h2>Coucou toi !</h2>
         <p>J'ai préparé une surprise spéciale juste pour toi...</p>
         <button class="btn" onclick="nextStep(2)">Découvrir 💕</button>
     </div>
 
-    <!-- ETAPE 2 -->
+    <!-- ÉTAPE 2 -->
     <div class="card" id="step2">
-        <svg class="chibi-avatar" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="100" cy="100" r="90" fill="#e8dff5"/>
-            <path d="M 50 120 Q 30 160 60 180 Q 100 190 140 180 Q 170 160 150 120 Z" fill="#2c1d11"/>
-            <circle cx="100" cy="105" r="55" fill="#8d5524"/>
-            <!-- Yeux joyeux (clins d'œil ^ ^) -->
-            <path d="M 72 100 Q 80 90 88 100" stroke="#1a0d00" stroke-width="4" stroke-linecap="round" fill="none"/>
-            <path d="M 112 100 Q 120 90 128 100" stroke="#1a0d00" stroke-width="4" stroke-linecap="round" fill="none"/>
-            <ellipse cx="72" cy="112" rx="8" ry="5" fill="#ff6b81" opacity="0.7"/>
-            <ellipse cx="128" cy="112" rx="8" ry="5" fill="#ff6b81" opacity="0.7"/>
-            <path d="M 90 115 Q 100 128 110 115 Z" fill="#1a0d00"/>
-            <path d="M 45 95 Q 70 60 100 80 Q 130 60 155 95 Q 100 65 45 95 Z" fill="#2c1d11"/>
-            <circle cx="140" cy="70" r="12" fill="#ff4081"/>
-            <circle cx="140" cy="70" r="5" fill="#fff"/>
-        </svg>
-
-        <h2>Offres Spéciales 🎁</h2>
+        <div class="header-emoji">🎁⭐</div>
+        <h2>Offres Spéciales</h2>
         <p>Commandez votre <strong>lien personnalisé web</strong> dès aujourd'hui !</p>
-        <p>
-            🌸 <strong>Pack Standard (2 000 FCFA)</strong><br>
-            ✨ <strong>Pack VIP (3 500 FCFA)</strong>
-        </p>
+        
+        <div class="price-box">
+            <p style="margin-bottom: 8px;">🌸 <strong>Pack Standard (2 000 FCFA)</strong></p>
+            <p style="margin-bottom: 0;">✨ <strong>Pack VIP (3 500 FCFA)</strong></p>
+        </div>
+
         <button class="btn" onclick="nextStep(3)">Continuer 🚀</button>
     </div>
 
-    <!-- ETAPE 3 -->
+    <!-- ÉTAPE 3 -->
     <div class="card" id="step3">
-        <svg class="chibi-avatar" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="100" cy="100" r="90" fill="#fce1e4"/>
-            <path d="M 50 120 Q 30 160 60 180 Q 100 190 140 180 Q 170 160 150 120 Z" fill="#2c1d11"/>
-            <circle cx="100" cy="105" r="55" fill="#8d5524"/>
-            <ellipse cx="80" cy="100" rx="9" ry="12" fill="#1a0d00"/>
-            <ellipse cx="120" cy="100" rx="9" ry="12" fill="#1a0d00"/>
-            <circle cx="78" cy="96" r="3" fill="#ffffff"/>
-            <circle cx="118" cy="96" r="3" fill="#ffffff"/>
-            <ellipse cx="72" cy="112" rx="7" ry="4" fill="#ff6b81" opacity="0.6"/>
-            <ellipse cx="128" cy="112" rx="7" ry="4" fill="#ff6b81" opacity="0.6"/>
-            <circle cx="100" cy="120" r="5" fill="#1a0d00"/> <!-- Bouche étonnée O -->
-            <path d="M 45 95 Q 70 60 100 80 Q 130 60 155 95 Q 100 65 45 95 Z" fill="#2c1d11"/>
-            <circle cx="140" cy="70" r="12" fill="#ff4081"/>
-            <circle cx="140" cy="70" r="5" fill="#fff"/>
-        </svg>
-
-        <h2>Une petite question... 😉</h2>
+        <div class="header-emoji">🤔💖</div>
+        <h2>Une petite question...</h2>
         <p>Est-ce que tu aimerais avoir ton propre site personnalisé ?</p>
         
         <div class="btn-group">
@@ -235,23 +190,10 @@
         </div>
     </div>
 
-    <!-- ETAPE 4 -->
+    <!-- ÉTAPE 4 -->
     <div class="card" id="step4">
-        <svg class="chibi-avatar" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="100" cy="100" r="90" fill="#d8f3dc"/>
-            <path d="M 50 120 Q 30 160 60 180 Q 100 190 140 180 Q 170 160 150 120 Z" fill="#2c1d11"/>
-            <circle cx="100" cy="105" r="55" fill="#8d5524"/>
-            <path d="M 72 100 Q 80 90 88 100" stroke="#1a0d00" stroke-width="4" stroke-linecap="round" fill="none"/>
-            <path d="M 112 100 Q 120 90 128 100" stroke="#1a0d00" stroke-width="4" stroke-linecap="round" fill="none"/>
-            <ellipse cx="72" cy="112" rx="8" ry="5" fill="#ff6b81" opacity="0.8"/>
-            <ellipse cx="128" cy="112" rx="8" ry="5" fill="#ff6b81" opacity="0.8"/>
-            <path d="M 88 115 Q 100 135 112 115 Z" fill="#ff4081"/> <!-- Grand sourire -->
-            <path d="M 45 95 Q 70 60 100 80 Q 130 60 155 95 Q 100 65 45 95 Z" fill="#2c1d11"/>
-            <circle cx="140" cy="70" r="12" fill="#ff4081"/>
-            <circle cx="140" cy="70" r="5" fill="#fff"/>
-        </svg>
-
-        <h2>Trop Génial ! 🎉</h2>
+        <div class="header-emoji">🎉🥳</div>
+        <h2>Trop Génial !</h2>
         <p>Je savais que ça t'intéresserait ! Envoie-moi un message pour réserver ton pack !</p>
         <button class="btn" onclick="location.reload()">Recommencer 🔄</button>
     </div>
@@ -264,6 +206,7 @@
             document.getElementById(`step${stepNumber}`).classList.add('active');
         }
 
+        /* Esquive du bouton Non à l'intérieur de la carte */
         function dodgeNo() {
             const noBtn = document.getElementById('noBtn');
             dodgeCount++;
@@ -288,6 +231,7 @@
             }
         }
 
+        /* Lancement des confettis */
         function acceptOffer() {
             confetti({
                 particleCount: 120,
@@ -297,6 +241,7 @@
             nextStep(4);
         }
 
+        /* Pluie de symboles en fond */
         function createFloatingElements() {
             const symbols = ['🌸', '💖', '✨', '🎀', '💫'];
             const element = document.createElement('div');
@@ -316,3 +261,4 @@
     </script>
 </body>
 </html>
+
