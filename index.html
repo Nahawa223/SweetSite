@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LAXMI.EXE — The Legendary Bestie</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Courier New', Courier, monospace;
+            user-select: none;
+        }
+
+        body {
+            background-color: #03030c;
+            color: #00ffcc;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Effet de tremblement de l'écran */
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            30% { transform: translate(3px, 2px) rotate(0deg); }
+            40% { transform: translate(1px, -1px) rotate(1deg); }
+            50% { transform: translate(-1px, 2px) rotate(-1deg); }
+            60% { transform: translate(-3px, 1px) rotate(0deg); }
+            70% { transform: translate(3px, 1px) rotate(-1deg); }
+            80% { transform: translate(-1px, -1px) rotate(1deg); }
+            90% { transform: translate(1px, 2px) rotate(0deg); }
+            100% { transform: translate(1px, -2px) rotate(-1deg); }
+        }
+
+        .screen-shake {
+            animation: shake 0.4s ease;
+        }
+
+        /* Fond galaxie & étoiles */
+        .stars {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .star {
+            position: absolute;
+            background: #ffffff;
+            border-radius: 50%;
+            animation: twinkle var(--duration) infinite ease-in-out;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.4); }
+        }
+
+        /* Conteneur principal style jeu rétro futuriste */
+        .game-container {
+            position: relative;
+            z-index: 10;
+            width: 92%;
+            max-width: 480px;
+            background: rgba(10, 10, 26, 0.9);
+            border: 2px solid #00ffcc;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 0 25px rgba(0, 255, 204, 0.3), inset 0 0 15px rgba(0, 255, 204, 0.1);
+            backdrop-filter: blur(10px);
+            min-height: 420px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .stage {
+            display: none;
+            width: 100%;
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        .stage.active {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.97); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        h1, h2 {
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            color: #00ffcc;
+            text-shadow: 0 0 10px rgba(0, 255, 204, 0.5);
+            line-height: 1.4;
+            letter-spacing: 1px;
+        }
+
+        p {
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+            color: #b0fff6;
+            line-height: 1.6;
+        }
+
+        /* Boutons cyber */
+        .btn {
+            background: transparent;
+            color: #00ffcc;
+            border: 2px solid #00ffcc;
+            padding: 12px 25px;
+            font-size: 0.95rem;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 0 10px rgba(0, 255, 204, 0.2);
+            margin-top: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn:hover {
+            background: #00ffcc;
+            color: #03030c;
+            box-shadow: 0 0 20px rgba(0, 255, 204, 0.8);
+            transform: translateY(-2px);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        /* Niveau 0 : Chargement initial */
+        .terminal-text {
+            text-align: left;
+            width: 100%;
+            font-size: 0.9rem;
+            color: #00ffcc;
+            margin-bottom: 15px;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 3px solid #00ffcc;
+            min-height: 90px;
+            white-space: pre-line;
+        }
+
+        /* Niveau 1 : Étoile cachée */
+        .star-area {
+            position: relative;
+            width: 100%;
+            height: 200px;
+            border: 1px dashed rgba(0, 255, 204, 0.3);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            background: rgba(0,0,0,0.3);
+        }
+
+        .hidden-star {
+            position: absolute;
+            font-size: 2rem;
+            cursor: pointer;
+            animation: pulse 1.5s infinite;
+            filter: drop-shadow(0 0 10px #ff00ff);
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.2); opacity: 1; }
+        }
+
+        /* Niveau 2 : Superpouvoirs */
+        .choices-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .choice-btn {
+            background: rgba(0, 255, 204, 0.05);
+            border: 1px solid rgba(0, 255, 204, 0.3);
+            color: #b0fff6;
+            padding: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 0.9rem;
+            text-align: left;
+        }
+
+        .choice-btn:hover {
+            background: rgba(0, 255, 204, 0.2);
+            border-color: #00ffcc;
+            color: #fff;
+        }
+
+        /* Niveau 3 : Carte du ciel */
+        .sky-map {
+            position: relative;
+            width: 100%;
+            height: 180px;
+            background: rgba(0,0,0,0.4);
+            border: 1px solid rgba(0, 255, 204, 0.3);
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .constellation-star {
+            position: absolute;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .constellation-star:hover {
+            transform: scale(1.4);
+        }
+
+        /* Niveau 4 : Statistiques */
+        .stats-container {
+            width: 100%;
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        .stat-row {
+            margin-bottom: 10px;
+            font-size: 0.85rem;
+        }
+
+        .stat-bar {
+            color: #ff00ff;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        /* Boss Final : Coffre Cosmique */
+        .cosmic-chest {
+            font-size: 4.5rem;
+            margin: 15px 0;
+            cursor: pointer;
+            transition: transform 0.2s;
+            filter: drop-shadow(0 0 15px rgba(255, 0, 255, 0.5));
+        }
+
+        .cosmic-chest:hover {
+            transform: scale(1.1);
+        }
+
+        /* Badges de fin */
+        .badges-box {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            margin: 15px 0;
+        }
+
+        .badge {
+            background: rgba(255, 0, 255, 0.15);
+            border: 1px solid #ff00ff;
+            color: #ff99ff;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            box-shadow: 0 0 8px rgba(255, 0, 255, 0.3);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="stars" id="stars"></div>
+
+    <div class="game-container" id="gameContainer">
+
+        <div class="stage active" id="stage-0">
+            <h1>LAXMI.EXE</h1>
+            <p style="font-size: 0.85rem; color: #ff00ff; margin-bottom: 15px;">The Legendary Bestie</p>
+            <div class="terminal-text" id="terminalLog">Initializing...</div>
+            <button class="btn" id="startBtn" style="display:none;" onclick="nextStage(1)">Connexion</button>
+        </div>
+
+        <div class="stage" id="stage-1">
+            <h2>Niveau 1</h2>
+            <p>Retrouve l'étoile cachée dans la matrice.</p>
+            <div class="star-area" id="starArea">
+                <div class="hidden-star" id="hiddenStar" style="top: 60%; left: 75%;" onclick="findStar()">⭐</div>
+            </div>
+            <div id="msg1" style="font-size: 0.9rem; color: #ff00ff; min-height: 25px;"></div>
+        </div>
+
+        <div class="stage" id="stage-2">
+            <h2>Niveau 2</h2>
+            <p>Choose your superpower.</p>
+            <div class="choices-grid">
+                <button class="choice-btn" onclick="choosePower()">Making people smile</button>
+                <button class="choice-btn" onclick="choosePower()">Being kind</button>
+                <button class="choice-btn" onclick="choosePower()">Being chaotic 😂</button>
+                <button class="choice-btn" onclick="choosePower()">All of the above</button>
+            </div>
+            <div id="msg2" style="font-size: 0.9rem; color: #ff00ff; min-height: 25px;"></div>
+        </div>
+
+        <div class="stage" id="stage-3">
+            <h2>Niveau 3</h2>
+            <p>Clique sur l'étoile brillante de la constellation.</p>
+            <div class="sky-map">
+                <span class="constellation-star" style="top: 20%; left: 20%;">✨</span>
+                <span class="constellation-star" style="top: 70%; left: 30%;">✨</span>
+                <span class="constellation-star" style="top: 40%; left: 70%;" onclick="clickConstellation()">⭐</span>
+                <span class="constellation-star" style="top: 80%; left: 80%;">✨</span>
+            </div>
+            <div id="msg3" style="font-size: 0.9rem; color: #ff00ff; min-height: 25px;"></div>
+        </div>
+
+        <div class="stage" id="stage-4">
+            <h2>Niveau 4</h2>
+            <p>Analyse de la personnalité en cours...</p>
+            <div class="stats-container" id="statsContainer">
+                <div class="stat-row">Kindness <span class="stat-bar" id="bar1"></span></div>
+                <div class="stat-row">Humor <span class="stat-bar" id="bar2"></span></div>
+                <div class="stat-row">Loyalty <span class="stat-bar" id="bar3"></span></div>
+                <div class="stat-row">Energy <span class="stat-bar" id="bar4"></span></div>
+                <div class="stat-row">Legend Status <span class="stat-bar" id="bar5"></span></div>
+            </div>
+            <button class="btn" id="statsBtn" style="display:none;" onclick="nextStage(5)">Continuer</button>
+        </div>
+
+        <div class="stage" id="stage-5">
+            <h2>Boss Final</h2>
+            <p>Coffre cosmique verrouillé.<br>Clique pour forcer l'accès ! (<span id="clicksLeft">3</span>)</p>
+            <div class="cosmic-chest" id="cosmicChest" onclick="hitChest()">🎁</div>
+        </div>
+
+        <div class="stage" id="stage-6">
+            <h2 style="color: #ff00ff;">Dear Laxmi,</h2>
+            <p style="font-size: 0.85rem; text-align: left; margin-bottom: 10px;">
+                If life were a video game...<br>
+                You'd already have every achievement.
+            </p>
+            <div class="badges-box">
+                <div class="badge">🏅 Best Friend</div>
+                <div class="badge">🏅 Professional Mood Booster</div>
+                <div class="badge">🏅 Chaos Manager</div>
+                <div class="badge">🏅 Unlimited Support</div>
+                <div class="badge">🏅 Legendary Human</div>
+            </div>
+            <p style="font-size: 0.8rem; margin-top: 10px; color: #00ffcc;">
+                Thank you for existing.<br>
+                The world became brighter the day you did.<br><br>
+                <span style="color: #ff00ff;">— Your best friend ❤️</span>
+            </p>
+            <button class="btn" onclick="location.reload()" style="font-size: 0.8rem; padding: 8px 15px;">Rejouer</button>
+        </div>
+
+    </div>
+
+    <script>
+        // --- Génération des étoiles de fond ---
+        const starsContainer = document.getElementById('stars');
+        for (let i = 0; i < 60; i++) {
+            const star = document.createElement('div');
+            star.classList.add('star');
+            star.style.top = `${Math.random() * 100}%`;
+            star.style.left = `${Math.random() * 100}%`;
+            star.style.width = `${Math.random() * 3 + 1}px`;
+            star.style.height = star.style.width;
+            star.style.setProperty('--duration', `${Math.random() * 3 + 2}s`);
+            starsContainer.appendChild(star);
+        }
+
+        // Effet de tremblement d'écran utilitaire
+        function triggerShake() {
+            const container = document.getElementById('gameContainer');
+            container.classList.add('screen-shake');
+            setTimeout(() => container.classList.remove('screen-shake'), 400);
+        }
+
+        // --- ÉTAPE 0 : Initialisation style terminal ---
+        window.addEventListener('DOMContentLoaded', () => {
+            const logs = "Initializing...\n█▒▒▒▒▒▒▒▒ 10%\n██████████ 100%\nSystem Online\n\nWARNING\nAn extraordinary human has just connected.\nIdentity confirmed...\nLAXMI";
+            const terminal = document.getElementById('terminalLog');
+            const startBtn = document.getElementById('startBtn');
+            terminal.innerHTML = "";
+            let i = 0;
+
+            function typeTerminal() {
+                if (i < logs.length) {
+                    terminal.innerHTML += logs.charAt(i) === '\n' ? '<br>' : logs.charAt(i);
+                    i++;
+                    setTimeout(typeTerminal, 25);
+                } else {
+                    startBtn.style.display = 'inline-block';
+                    triggerShake();
+                }
+            }
+            setTimeout(typeTerminal, 500);
+        });
+
+        // --- Gestion des étapes ---
+        function nextStage(stageNumber) {
+            document.querySelectorAll('.stage').forEach(s => s.classList.remove('active'));
+            document.getElementById(`stage-${stageNumber}`).classList.add('active');
+
+            if (stageNumber === 4) {
+                startStatsAnimation();
+            }
+        }
+
+        // --- Niveau 1 ---
+        function findStar() {
+            document.getElementById('msg1.5') || {};
+            document.getElementById('msg1').innerText = "Memory unlocked ⭐";
+            setTimeout(() => {
+                nextStage(2);
+            }, 1200);
+        }
+
+        // --- Niveau 2 ---
+        function choosePower() {
+            document.getElementById('msg2').innerText = "Correct.";
+            setTimeout(() => {
+                nextStage(3);
+            }, 1000);
+        }
+
+        // --- Niveau 3 ---
+        function clickConstellation() {
+            document.getElementById('msg3').innerText = "Somewhere...\nA friend is grateful that you exist.";
+            setTimeout(() => {
+                nextStage(4);
+            }, 1800);
+        }
+
+        // --- Niveau 4 : Statistiques exagérées ---
+        function startStatsAnimation() {
+            const bars = ['bar1', 'bar2', 'bar3', 'bar4', 'bar5'];
+            bars.forEach((id, index) => {
+                setTimeout(() => {
+                    document.getElementById(id).innerText = "██████████";
+                }, (index + 1) * 300);
+            });
+
+            setTimeout(() => {
+                const container = document.getElementById('statsContainer');
+                container.innerHTML += `<br><span style="color: #ff00ff; font-weight: bold;">> Impossible.<br>> The score exceeded the limit.</span>`;
+                document.getElementById('statsBtn').style.display = 'inline-block';
+            }, 1800);
+        }
+
+        // --- Boss Final : Coffre ---
+        let chestClicks = 3;
+        function hitChest() {
+            chestClicks--;
+            triggerShake();
+            if (chestClicks > 0) {
+                document.getElementById('clicksLeft').innerText = chestClicks;
+            } else {
+                document.getElementById('cosmicChest').innerText = "💥";
+                setTimeout(() => {
+                    nextStage(6);
+                }, 800);
+            }
+        }
+    </script>
+</body>
+</html>
