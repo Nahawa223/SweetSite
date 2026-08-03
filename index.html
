@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aventure Interactive ✨</title>
+    
+    <!-- Confettis RPG -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #1a0826;
+            background: radial-gradient(circle, #2d124d 0%, #0f0418 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+            position: relative;
+            padding: 15px;
+            color: white;
+        }
+
+        /* --- ÉTOILES DU FOND --- */
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle var(--duration) infinite alternate;
+        }
+
+        @keyframes twinkle {
+            0% { opacity: 0.2; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1.2); }
+        }
+
+        /* --- CADRE STYLE RPG / VISUAL NOVEL --- */
+        .rpg-container {
+            background: rgba(35, 15, 50, 0.9);
+            border: 3px solid #ff79b0;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 0 25px rgba(255, 121, 176, 0.4);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* --- PERSONNAGE RPG (SVG AVATAR) --- */
+        .avatar-box {
+            width: 170px;
+            height: 170px;
+            margin-bottom: 15px;
+            animation: float 3s ease-in-out infinite;
+            filter: drop-shadow(0 0 12px rgba(255, 105, 180, 0.5));
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        /* --- BOÎTE DE DIALOGUE RPG --- */
+        .dialogue-box {
+            background: rgba(15, 5, 25, 0.85);
+            border: 2px solid #ff79b0;
+            border-radius: 12px;
+            padding: 15px;
+            width: 100%;
+            min-height: 110px;
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .speaker-name {
+            position: absolute;
+            top: -12px;
+            left: 15px;
+            background: #ff4081;
+            color: white;
+            font-size: 0.8rem;
+            font-weight: bold;
+            padding: 2px 10px;
+            border-radius: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .dialogue-text {
+            color: #ffe6f0;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-top: 5px;
+        }
+
+        .price-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 121, 176, 0.3);
+            border-radius: 10px;
+            padding: 10px;
+            margin-top: 8px;
+            text-align: left;
+        }
+
+        /* --- CHOIX / BOUTONS DE COMMANDE --- */
+        .choices-box {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+            position: relative;
+            min-height: 50px;
+        }
+
+        .rpg-btn {
+            background: linear-gradient(90deg, #ff4081, #b83280);
+            color: white;
+            border: 2px solid #ff9ebb;
+            padding: 12px 15px;
+            font-size: 0.95rem;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(255, 64, 129, 0.3);
+            transition: all 0.2s;
+            text-decoration: none;
+            text-align: center;
+            display: block;
+        }
+
+        .rpg-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 15px rgba(255, 64, 129, 0.6);
+        }
+
+        .rpg-btn-secondary {
+            background: linear-gradient(90deg, #4a5568, #2d3748);
+            border-color: #a0aec0;
+            box-shadow: none;
+        }
+
+        .social-link {
+            background: linear-gradient(90deg, #833ab4, #fd1d1d, #fcb045);
+            margin-top: 5px;
+        }
+
+        .tiktok-link {
+            background: linear-gradient(90deg, #00f2fe, #4facfe);
+            margin-top: 5px;
+        }
+
+        /* Masquage des étapes */
+        .step { display: none; width: 100%; }
+        .step.active { display: flex; flex-direction: column; align-items: center; }
+    </style>
+</head>
+<body>
+
+    <!-- RPG Container -->
+    <div class="rpg-container">
+        
+        <!-- AVATAR FILLE DE DESSIN (SVG) -->
+        <svg class="avatar-box" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="100" cy="100" r="90" fill="#3a1c54"/>
+            <!-- Cheveux long arrière -->
+            <path d="M 45 110 Q 20 170 55 190 Q 100 200 145 190 Q 180 170 155 110 Z" fill="#1f132b"/>
+            <!-- Visage -->
+            <circle cx="100" cy="105" r="50" fill="#8d5524"/>
+            <!-- Yeux RPG Manga -->
+            <ellipse cx="80" cy="100" rx="8" ry="11" fill="#fff"/>
+            <ellipse cx="120" cy="100" rx="8" ry="11" fill="#fff"/>
+            <ellipse cx="80" cy="101" rx="5" ry="8" fill="#ff4081"/>
+            <ellipse cx="120" cy="101" rx="5" ry="8" fill="#ff4081"/>
+            <circle cx="78" cy="98" r="2.5" fill="#ffffff"/>
+            <circle cx="118" cy="98" r="2.5" fill="#ffffff"/>
+            <!-- Couronne / Diadème Princesse -->
+            <path d="M 75 62 L 85 45 L 100 58 L 115 45 L 125 62 Z" fill="#ffd700" stroke="#ffb700" stroke-width="2"/>
+            <circle cx="100" cy="52" r="3" fill="#ff4081"/>
+            <!-- Joues roses -->
+            <ellipse cx="72" cy="112" rx="6" ry="3" fill="#ff6b81" opacity="0.6"/>
+            <ellipse cx="128" cy="112" rx="6" ry="3" fill="#ff6b81" opacity="0.6"/>
+            <!-- Sourire -->
+            <path id="mouth" d="M 92 118 Q 100 126 108 118" stroke="#1a0d00" stroke-width="3" stroke-linecap="round" fill="none"/>
+            <!-- Cheveux Bangs devant -->
+            <path d="M 48 95 Q 75 65 100 82 Q 125 65 152 95 Q 100 70 48 95 Z" fill="#1f132b"/>
+        </svg>
+
+        <!-- ÉTAPE 1 : INTRO -->
+        <div class="step active" id="step1">
+            <div class="dialogue-box">
+                <span class="speaker-name">Princesse du Sahel</span>
+                <p class="dialogue-text">« Bienvenue, noble voyageur ! ✨ J'ai préparé une quête très spéciale rien que pour toi... »</p>
+            </div>
+            <div class="choices-box">
+                <button class="rpg-btn" onclick="nextStep(2)">[ Écouter la suite ] 📜</button>
+            </div>
+        </div>
+
+        <!-- ÉTAPE 2 : PRÉSENTATION DES OFFRES -->
+        <div class="step" id="step2">
+            <div class="dialogue-box">
+                <span class="speaker-name">Princesse du Sahel</span>
+                <p class="dialogue-text">« Veux-tu commander ton propre **lien personnalisé web** ? Voici mes grimoires : »</p>
+                <div class="price-card">
+                    <p>🌸 <strong>Pack Standard :</strong> 2 500 FCFA (~4€)</p>
+                    <p style="margin-top: 5px;">✨ <strong>Pack VIP :</strong> 4 500 FCFA (~7€)</p>
+                </div>
+            </div>
+            <div class="choices-box">
+                <button class="rpg-btn" onclick="nextStep(3)">[ Continuer l'aventure ] ⚔️</button>
+            </div>
+        </div>
+
+        <!-- ÉTAPE 3 : LA QUESTION / BOUTON ESQUIVE -->
+        <div class="step" id="step3">
+            <div class="dialogue-box">
+                <span class="speaker-name">Princesse du Sahel</span>
+                <p class="dialogue-text">« Es-tu prêt à obtenir ton site personnalisé pour surprendre tes proches ? »</p>
+            </div>
+            <div class="choices-box" id="choiceBox3">
+                <button class="rpg-btn" onclick="acceptOffer()">Oui, absolument ! 🥰</button>
+                <button class="rpg-btn rpg-btn-secondary" id="noBtn" onclick="dodgeNo()">Non</button>
+            </div>
+        </div>
+
+        <!-- ÉTAPE 4 : FIN & LIENS RESEAUX SOCIAUX -->
+        <div class="step" id="step4">
+            <div class="dialogue-box">
+                <span class="speaker-name">Princesse du Sahel</span>
+                <p class="dialogue-text">« Victoire ! 🎉 Contacte-moi directement sur mes réseaux sociaux pour réserver ton pack : »</p>
+            </div>
+            <div class="choices-box">
+                <a href="https://www.instagram.com/la_princesse_du_sahel" target="_blank" class="rpg-btn social-link">📸 Instagram (@la_princesse_du_sahel)</a>
+                <a href="https://www.tiktok.com/@la_princesse_du_sahel" target="_blank" class="rpg-btn tiktok-link">🎵 TikTok (@la_princesse_du_sahel)</a>
+                <button class="rpg-btn rpg-btn-secondary" style="margin-top: 10px;" onclick="location.reload()">Recommencer 🔄</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Génération d'étoiles animées en arrière-plan
+        for (let i = 0; i < 40; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.width = Math.random() * 3 + 'px';
+            star.style.height = star.style.width;
+            star.style.top = Math.random() * 100 + 'vh';
+            star.style.left = Math.random() * 100 + 'vw';
+            star.style.setProperty('--duration', (Math.random() * 2 + 1) + 's');
+            document.body.appendChild(star);
+        }
+
+        let dodgeCount = 0;
+
+        function nextStep(stepNumber) {
+            document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
+            document.getElementById(`step${stepNumber}`).classList.add('active');
+        }
+
+        /* Esquive du bouton Non façon jeu vidéo */
+        function dodgeNo() {
+            const noBtn = document.getElementById('noBtn');
+            const choiceBox = document.getElementById('choiceBox3');
+            dodgeCount++;
+
+            if (dodgeCount < 3) {
+                const maxX = choiceBox.offsetWidth - noBtn.offsetWidth;
+                const maxY = 80;
+
+                const x = Math.max(0, Math.random() * maxX);
+                const y = (Math.random() - 0.5) * maxY;
+
+                noBtn.style.position = "absolute";
+                noBtn.style.left = x + "px";
+                noBtn.style.top = y + "px";
+            } else {
+                noBtn.style.position = "static";
+                noBtn.textContent = "💖 D'accord, je veux !";
+                noBtn.classList.remove('rpg-btn-secondary');
+                noBtn.onclick = acceptOffer;
+            }
+        }
+
+        /* Explosion de confettis au choix positif */
+        function acceptOffer() {
+            confetti({
+                particleCount: 150,
+                spread: 80,
+                origin: { y: 0.6 }
+            });
+            nextStep(4);
+        }
+    </script>
+</body>
+</html>
