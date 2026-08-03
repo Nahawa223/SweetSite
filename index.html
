@@ -3,47 +3,47 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mini RPG</title>
+<title>Ma page</title>
 
 <style>
 body {
-    background: #160b25;
-    color: white;
-    font-family: Arial;
+    margin: 0;
+    height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    background: linear-gradient(135deg, #ff79b0, #6c5ce7);
+    font-family: Arial, sans-serif;
 }
 
-.game {
-    background: #302050;
-    width: 320px;
-    padding: 20px;
+.card {
+    background: white;
+    padding: 30px;
     border-radius: 20px;
-    border: 3px solid pink;
     text-align: center;
+    width: 300px;
 }
 
-.hero {
-    font-size: 70px;
+h1 {
+    color: #333;
 }
 
-.box {
-    background: #10081a;
-    padding: 15px;
-    border-radius: 10px;
-    margin: 15px 0;
+p {
+    color: #666;
 }
 
 button {
-    width: 100%;
-    padding: 12px;
-    border: none;
-    border-radius: 20px;
-    background: #ff4f9a;
+    background: #ff4081;
     color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 25px;
+    cursor: pointer;
     font-size: 16px;
+}
+
+button:hover {
+    transform: scale(1.05);
 }
 </style>
 
@@ -51,55 +51,20 @@ button {
 
 <body>
 
-<div class="game">
+<div class="card">
+    <h1>✨ Bienvenue</h1>
+    <p>Découvre mon univers et mes services.</p>
 
-<div class="hero">🧙‍♀️</div>
-
-<h2>Mini RPG</h2>
-
-<div class="box" id="texte">
-Bienvenue aventurier !<br>
-Une quête t'attend...
-</div>
-
-<button id="bouton">Commencer</button>
-
+    <button onclick="message()">
+        Me contacter
+    </button>
 </div>
 
 
 <script>
-
-let etape = 0;
-
-const texte = document.getElementById("texte");
-const bouton = document.getElementById("bouton");
-
-bouton.onclick = function(){
-
-    etape++;
-
-    if(etape === 1){
-        texte.innerHTML = "📜 Mission : trouver le trésor magique !";
-        bouton.innerHTML = "Continuer";
-    }
-
-    else if(etape === 2){
-        texte.innerHTML = "⚔️ Un monstre apparaît !<br>Tu attaques avec ton épée.";
-        bouton.innerHTML = "Attaquer";
-    }
-
-    else if(etape === 3){
-        texte.innerHTML = "💥 Victoire ! Tu gagnes 100 pièces d'or.";
-        bouton.innerHTML = "Fin";
-    }
-
-    else{
-        texte.innerHTML = "🏆 Quête terminée !";
-        bouton.style.display = "none";
-    }
-
-};
-
+function message(){
+    alert("Merci de ton intérêt 💖");
+}
 </script>
 
 </body>
