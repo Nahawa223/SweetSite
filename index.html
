@@ -3,307 +3,426 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aventure Interactive ✨</title>
-    
-    <!-- Confettis RPG -->
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    
+    <title>La Légende du Sahel - RPG Textuel</title>
     <style>
+        /* --- STYLES RETRO JRPG --- */
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Courier New', Courier, monospace;
+            user-select: none;
         }
 
         body {
-            background: #1a0826;
-            background: radial-gradient(circle, #2d124d 0%, #0f0418 100%);
+            background-color: #05050a;
+            color: #f0f0f0;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow-x: hidden;
+            padding: 10px;
+            overflow: hidden;
             position: relative;
-            padding: 15px;
-            color: white;
         }
 
-        /* --- ÉTOILES DU FOND --- */
-        .star {
+        /* Effet d'étoiles en fond */
+        .stars-bg {
             position: absolute;
-            background: white;
-            border-radius: 50%;
-            animation: twinkle var(--duration) infinite alternate;
-        }
-
-        @keyframes twinkle {
-            0% { opacity: 0.2; transform: scale(0.8); }
-            100% { opacity: 1; transform: scale(1.2); }
-        }
-
-        /* --- CADRE STYLE RPG / VISUAL NOVEL --- */
-        .rpg-container {
-            background: rgba(35, 15, 50, 0.9);
-            border: 3px solid #ff79b0;
-            border-radius: 20px;
             width: 100%;
-            max-width: 420px;
-            box-shadow: 0 0 25px rgba(255, 121, 176, 0.4);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+            z-index: 1;
+        }
+
+        /* Conteneur principal */
+        #game-container {
             position: relative;
             z-index: 10;
-        }
-
-        /* --- PERSONNAGE RPG (SVG AVATAR) --- */
-        .avatar-box {
-            width: 170px;
-            height: 170px;
-            margin-bottom: 15px;
-            animation: float 3s ease-in-out infinite;
-            filter: drop-shadow(0 0 12px rgba(255, 105, 180, 0.5));
-        }
-
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0px); }
-        }
-
-        /* --- BOÎTE DE DIALOGUE RPG --- */
-        .dialogue-box {
-            background: rgba(15, 5, 25, 0.85);
-            border: 2px solid #ff79b0;
-            border-radius: 12px;
-            padding: 15px;
             width: 100%;
-            min-height: 110px;
-            margin-bottom: 15px;
-            position: relative;
-        }
-
-        .speaker-name {
-            position: absolute;
-            top: -12px;
-            left: 15px;
-            background: #ff4081;
-            color: white;
-            font-size: 0.8rem;
-            font-weight: bold;
-            padding: 2px 10px;
-            border-radius: 10px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .dialogue-text {
-            color: #ffe6f0;
-            font-size: 0.95rem;
-            line-height: 1.5;
-            margin-top: 5px;
-        }
-
-        .price-card {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 121, 176, 0.3);
-            border-radius: 10px;
-            padding: 10px;
-            margin-top: 8px;
-            text-align: left;
-        }
-
-        /* --- CHOIX / BOUTONS DE COMMANDE --- */
-        .choices-box {
+            max-width: 500px;
+            background: rgba(15, 15, 25, 0.95);
+            border: 4px solid #ff79b0;
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(255, 121, 176, 0.3);
+            padding: 15px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
+        }
+
+        /* En-tête / Statistiques du Joueur */
+        .stats-bar {
+            background: #111122;
+            border: 2px solid #444466;
+            border-radius: 8px;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+
+        .bar-container {
             width: 100%;
+            background: #333;
+            height: 10px;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 3px;
+        }
+
+        .hp-fill {
+            height: 100%;
+            background: #ff4757;
+            width: 100%;
+            transition: width 0.3s ease;
+        }
+
+        /* Scène / Rendu Visuel (SVG + Emojis) */
+        .scene-window {
+            height: 160px;
+            background: #000;
+            border: 2px solid #444466;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             position: relative;
-            min-height: 50px;
+            overflow: hidden;
         }
 
-        .rpg-btn {
-            background: linear-gradient(90deg, #ff4081, #b83280);
-            color: white;
-            border: 2px solid #ff9ebb;
-            padding: 12px 15px;
-            font-size: 0.95rem;
-            font-weight: bold;
-            border-radius: 30px;
+        .monster-avatar {
+            font-size: 5rem;
+            animation: idle 2s infinite ease-in-out;
+            filter: drop-shadow(0 0 10px rgba(255,255,255,0.2));
+        }
+
+        @keyframes idle {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .shake {
+            animation: shakeAnim 0.3s ease-in-out;
+        }
+
+        @keyframes shakeAnim {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-10px); }
+            40%, 80% { transform: translateX(10px); }
+        }
+
+        /* Boîte de Dialogue avec effet Machine à Écrire */
+        .dialogue-box {
+            background: #0d0d1a;
+            border: 2px solid #ff79b0;
+            border-radius: 8px;
+            padding: 12px;
+            min-height: 90px;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            color: #ffe6f0;
+        }
+
+        /* Options & Boutons */
+        .controls-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .btn {
+            background: linear-gradient(180deg, #2c2c54 0%, #171738 100%);
+            color: #fff;
+            border: 2px solid #6c5ce7;
+            padding: 10px;
+            font-size: 0.85rem;
+            border-radius: 6px;
             cursor: pointer;
-            box-shadow: 0 4px 12px rgba(255, 64, 129, 0.3);
             transition: all 0.2s;
-            text-decoration: none;
-            text-align: center;
-            display: block;
+            font-weight: bold;
         }
 
-        .rpg-btn:hover {
+        .btn:hover {
+            background: #6c5ce7;
+            border-color: #a29bfe;
             transform: scale(1.02);
-            box-shadow: 0 0 15px rgba(255, 64, 129, 0.6);
         }
 
-        .rpg-btn-secondary {
-            background: linear-gradient(90deg, #4a5568, #2d3748);
-            border-color: #a0aec0;
-            box-shadow: none;
+        .btn-action {
+            grid-column: span 2;
+            background: linear-gradient(180deg, #ff4081 0%, #b83280 100%);
+            border-color: #ff79b0;
         }
 
-        .social-link {
-            background: linear-gradient(90deg, #833ab4, #fd1d1d, #fcb045);
-            margin-top: 5px;
-        }
-
-        .tiktok-link {
-            background: linear-gradient(90deg, #00f2fe, #4facfe);
-            margin-top: 5px;
-        }
-
-        /* Masquage des étapes */
-        .step { display: none; width: 100%; }
-        .step.active { display: flex; flex-direction: column; align-items: center; }
+        /* Cache les menus inactifs */
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
-    <!-- RPG Container -->
-    <div class="rpg-container">
+    <div class="stars-bg"></div>
+
+    <div id="game-container">
         
-        <!-- AVATAR FILLE DE DESSIN (SVG) -->
-        <svg class="avatar-box" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="100" cy="100" r="90" fill="#3a1c54"/>
-            <!-- Cheveux long arrière -->
-            <path d="M 45 110 Q 20 170 55 190 Q 100 200 145 190 Q 180 170 155 110 Z" fill="#1f132b"/>
-            <!-- Visage -->
-            <circle cx="100" cy="105" r="50" fill="#8d5524"/>
-            <!-- Yeux RPG Manga -->
-            <ellipse cx="80" cy="100" rx="8" ry="11" fill="#fff"/>
-            <ellipse cx="120" cy="100" rx="8" ry="11" fill="#fff"/>
-            <ellipse cx="80" cy="101" rx="5" ry="8" fill="#ff4081"/>
-            <ellipse cx="120" cy="101" rx="5" ry="8" fill="#ff4081"/>
-            <circle cx="78" cy="98" r="2.5" fill="#ffffff"/>
-            <circle cx="118" cy="98" r="2.5" fill="#ffffff"/>
-            <!-- Couronne / Diadème Princesse -->
-            <path d="M 75 62 L 85 45 L 100 58 L 115 45 L 125 62 Z" fill="#ffd700" stroke="#ffb700" stroke-width="2"/>
-            <circle cx="100" cy="52" r="3" fill="#ff4081"/>
-            <!-- Joues roses -->
-            <ellipse cx="72" cy="112" rx="6" ry="3" fill="#ff6b81" opacity="0.6"/>
-            <ellipse cx="128" cy="112" rx="6" ry="3" fill="#ff6b81" opacity="0.6"/>
-            <!-- Sourire -->
-            <path id="mouth" d="M 92 118 Q 100 126 108 118" stroke="#1a0d00" stroke-width="3" stroke-linecap="round" fill="none"/>
-            <!-- Cheveux Bangs devant -->
-            <path d="M 48 95 Q 75 65 100 82 Q 125 65 152 95 Q 100 70 48 95 Z" fill="#1f132b"/>
-        </svg>
-
-        <!-- ÉTAPE 1 : INTRO -->
-        <div class="step active" id="step1">
-            <div class="dialogue-box">
-                <span class="speaker-name">Princesse du Sahel</span>
-                <p class="dialogue-text">« Bienvenue, noble voyageur ! ✨ J'ai préparé une quête très spéciale rien que pour toi... »</p>
-            </div>
-            <div class="choices-box">
-                <button class="rpg-btn" onclick="nextStep(2)">[ Écouter la suite ] 📜</button>
+        <!-- BARRE DE STATS -->
+        <div class="stats-bar" id="stats-bar">
+            <div>🎮 <span id="p-name">Héros</span> (Niv. <span id="p-lvl">1</span>)</div>
+            <div>💰 <span id="p-gold">20</span> Or</div>
+            <div>🧪 Potions: <span id="p-potions">2</span></div>
+            <div style="width: 100%;">
+                PV: <span id="p-hp">30</span>/<span id="p-max-hp">30</span>
+                <div class="bar-container"><div class="hp-fill" id="hp-bar"></div></div>
             </div>
         </div>
 
-        <!-- ÉTAPE 2 : PRÉSENTATION DES OFFRES -->
-        <div class="step" id="step2">
-            <div class="dialogue-box">
-                <span class="speaker-name">Princesse du Sahel</span>
-                <p class="dialogue-text">« Veux-tu commander ton propre **lien personnalisé web** ? Voici mes grimoires : »</p>
-                <div class="price-card">
-                    <p>🌸 <strong>Pack Standard :</strong> 2 500 FCFA (~4€)</p>
-                    <p style="margin-top: 5px;">✨ <strong>Pack VIP :</strong> 4 500 FCFA (~7€)</p>
-                </div>
-            </div>
-            <div class="choices-box">
-                <button class="rpg-btn" onclick="nextStep(3)">[ Continuer l'aventure ] ⚔️</button>
-            </div>
+        <!-- ZONE VISUELLE -->
+        <div class="scene-window" id="scene-window">
+            <div class="monster-avatar" id="avatar">👸✨</div>
         </div>
 
-        <!-- ÉTAPE 3 : LA QUESTION / BOUTON ESQUIVE -->
-        <div class="step" id="step3">
-            <div class="dialogue-box">
-                <span class="speaker-name">Princesse du Sahel</span>
-                <p class="dialogue-text">« Es-tu prêt à obtenir ton site personnalisé pour surprendre tes proches ? »</p>
-            </div>
-            <div class="choices-box" id="choiceBox3">
-                <button class="rpg-btn" onclick="acceptOffer()">Oui, absolument ! 🥰</button>
-                <button class="rpg-btn rpg-btn-secondary" id="noBtn" onclick="dodgeNo()">Non</button>
-            </div>
+        <!-- BOÎTE DE DIALOGUE -->
+        <div class="dialogue-box" id="dialogue-text">
+            Bienvenue dans La Légende du Sahel ! Choisissez une option pour commencer...
         </div>
 
-        <!-- ÉTAPE 4 : FIN & LIENS RESEAUX SOCIAUX -->
-        <div class="step" id="step4">
-            <div class="dialogue-box">
-                <span class="speaker-name">Princesse du Sahel</span>
-                <p class="dialogue-text">« Victoire ! 🎉 Contacte-moi directement sur mes réseaux sociaux pour réserver ton pack : »</p>
-            </div>
-            <div class="choices-box">
-                <a href="https://www.instagram.com/la_princesse_du_sahel" target="_blank" class="rpg-btn social-link">📸 Instagram (@la_princesse_du_sahel)</a>
-                <a href="https://www.tiktok.com/@la_princesse_du_sahel" target="_blank" class="rpg-btn tiktok-link">🎵 TikTok (@la_princesse_du_sahel)</a>
-                <button class="rpg-btn rpg-btn-secondary" style="margin-top: 10px;" onclick="location.reload()">Recommencer 🔄</button>
-            </div>
+        <!-- GRILLE DE COMMANDES -->
+        <div class="controls-grid" id="controls">
+            <!-- Boutons injectés dynamiquement via JS -->
         </div>
 
     </div>
 
     <script>
-        // Génération d'étoiles animées en arrière-plan
-        for (let i = 0; i < 40; i++) {
-            const star = document.createElement('div');
-            star.className = 'star';
-            star.style.width = Math.random() * 3 + 'px';
-            star.style.height = star.style.width;
-            star.style.top = Math.random() * 100 + 'vh';
-            star.style.left = Math.random() * 100 + 'vw';
-            star.style.setProperty('--duration', (Math.random() * 2 + 1) + 's');
-            document.body.appendChild(star);
-        }
+        /* --- AUDIO SYNTHETIQUE (Web Audio API) --- */
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-        let dodgeCount = 0;
+        function playSound(type) {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
 
-        function nextStep(stepNumber) {
-            document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
-            document.getElementById(`step${stepNumber}`).classList.add('active');
-        }
-
-        /* Esquive du bouton Non façon jeu vidéo */
-        function dodgeNo() {
-            const noBtn = document.getElementById('noBtn');
-            const choiceBox = document.getElementById('choiceBox3');
-            dodgeCount++;
-
-            if (dodgeCount < 3) {
-                const maxX = choiceBox.offsetWidth - noBtn.offsetWidth;
-                const maxY = 80;
-
-                const x = Math.max(0, Math.random() * maxX);
-                const y = (Math.random() - 0.5) * maxY;
-
-                noBtn.style.position = "absolute";
-                noBtn.style.left = x + "px";
-                noBtn.style.top = y + "px";
-            } else {
-                noBtn.style.position = "static";
-                noBtn.textContent = "💖 D'accord, je veux !";
-                noBtn.classList.remove('rpg-btn-secondary');
-                noBtn.onclick = acceptOffer;
+            if (type === 'click') {
+                osc.frequency.setValueAtTime(400, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.05);
+            } else if (type === 'hit') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(120, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.15);
+            } else if (type === 'win') {
+                osc.frequency.setValueAtTime(523, audioCtx.currentTime);
+                osc.frequency.setValueAtTime(659, audioCtx.currentTime + 0.1);
+                gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.3);
             }
         }
 
-        /* Explosion de confettis au choix positif */
-        function acceptOffer() {
-            confetti({
-                particleCount: 150,
-                spread: 80,
-                origin: { y: 0.6 }
-            });
-            nextStep(4);
+        /* --- ÉTAT DU JEU (STATE) --- */
+        let player = {
+            name: "Voyageur",
+            hp: 30,
+            maxHp: 30,
+            gold: 20,
+            lvl: 1,
+            xp: 0,
+            potions: 2
+        };
+
+        let currentEnemy = null;
+
+        const enemies = [
+            { name: "Scorpion du Désert", hp: 15, maxHp: 15, atk: 4, avatar: "🦂", xp: 10, gold: 15 },
+            { name: "Esprit de la Forêt", hp: 25, maxHp: 25, atk: 7, avatar: "     🌿👻", xp: 20, gold: 25 },
+            { name: "Gardien du Donjon", hp: 45, maxHp: 45, atk: 12, avatar: "👹", xp: 50, gold: 100 }
+        ];
+
+        /* --- EFFET MACHINE À ÉCRIRE --- */
+        function typeWriter(text, elementId, speed = 25) {
+            const el = document.getElementById(elementId);
+            el.innerHTML = "";
+            let i = 0;
+            function type() {
+                if (i < text.length) {
+                    el.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
+                }
+            }
+            type();
         }
+
+        /* --- MISE À JOUR DE L'INTERFACE --- */
+        function updateUI() {
+            document.getElementById('p-name').textContent = player.name;
+            document.getElementById('p-lvl').textContent = player.lvl;
+            document.getElementById('p-gold').textContent = player.gold;
+            document.getElementById('p-hp').textContent = player.hp;
+            document.getElementById('p-max-hp').textContent = player.maxHp;
+            document.getElementById('p-potions').textContent = player.potions;
+
+            const hpPercent = (player.hp / player.maxHp) * 100;
+            document.getElementById('hp-bar').style.width = Math.max(0, hpPercent) + "%";
+
+            // Sauvegarde automatique dans le navigateur
+            localStorage.setItem('rpg_save', JSON.stringify(player));
+        }
+
+        /* --- ARBRE DE NAVIGATION / CHOIX --- */
+        function showMenu() {
+            updateUI();
+            document.getElementById('avatar').textContent = "🏰";
+            typeWriter("Tu es au centre du Village. Où souhaites-tu te rendre ?", "dialogue-text");
+
+            setButtons([
+                { text: "🌲 Explorer la Forêt", action: () => startBattle(0) },
+                { text: "🏰 Donjon Sombre", action: () => startBattle(2) },
+                { text: "🛒 Visiter la Boutique", action: openShop },
+                { text: "💾 Recommencer", action: resetGame }
+            ]);
+        }
+
+        /* --- SYSTEME DE COMBAT --- */
+        function startBattle(enemyIndex) {
+            currentEnemy = { ...enemies[enemyIndex] };
+            document.getElementById('avatar').textContent = currentEnemy.avatar;
+            typeWriter(`Un ${currentEnemy.name} sauvage apparaît !`, "dialogue-text");
+
+            setCombatButtons();
+        }
+
+        function setCombatButtons() {
+            setButtons([
+                { text: "⚔️ Attaquer", action: playerAttack },
+                { text: "🧪 Potion (+15 PV)", action: usePotion },
+                { text: "🏃 Fuir", action: showMenu }
+            ]);
+        }
+
+        function playerAttack() {
+            playSound('hit');
+            const dmg = Math.floor(Math.random() * 5) + 5 + (player.lvl * 2);
+            currentEnemy.hp -= dmg;
+
+            document.getElementById('scene-window').classList.add('shake');
+            setTimeout(() => document.getElementById('scene-window').classList.remove('shake'), 300);
+
+            if (currentEnemy.hp <= 0) {
+                playSound('win');
+                player.gold += currentEnemy.gold;
+                player.xp += currentEnemy.xp;
+                
+                // Montée de niveau
+                if (player.xp >= player.lvl * 20) {
+                    player.lvl++;
+                    player.maxHp += 10;
+                    player.hp = player.maxHp;
+                    typeWriter(`Victoire ! Tu gagnais ${currentEnemy.gold} Or et montes au Niveau ${player.lvl} ! 🎉`, "dialogue-text");
+                } else {
+                    typeWriter(`Victoire ! Tu as vaincu le ${currentEnemy.name} et gagné ${currentEnemy.gold} Or !`, "dialogue-text");
+                }
+
+                updateUI();
+                setButtons([{ text: "Continuer", action: showMenu }]);
+            } else {
+                typeWriter(`Tu infliges ${dmg} dégâts ! Le ${currentEnemy.name} réplique !`, "dialogue-text");
+                setTimeout(enemyAttack, 1200);
+            }
+        }
+
+        function enemyAttack() {
+            playSound('hit');
+            const dmg = Math.max(1, currentEnemy.atk - Math.floor(player.lvl / 2));
+            player.hp -= dmg;
+            updateUI();
+
+            if (player.hp <= 0) {
+                player.hp = 0;
+                updateUI();
+                document.getElementById('avatar').textContent = "💀";
+                typeWriter("Tu as été vaincu... Le jeu va réinitialiser tes PV au village.", "dialogue-text");
+                player.hp = player.maxHp;
+                setButtons([{ text: "Se réveiller au village", action: showMenu }]);
+            } else {
+                setCombatButtons();
+            }
+        }
+
+        function usePotion() {
+            if (player.potions > 0 && player.hp < player.maxHp) {
+                playSound('win');
+                player.potions--;
+                player.hp = Math.min(player.maxHp, player.hp + 15);
+                updateUI();
+                typeWriter("Tu bois une potion et récupères 15 PV !", "dialogue-text");
+                setTimeout(enemyAttack, 1200);
+            } else {
+                typeWriter("Pas de potion disponible ou santé déjà au maximum !", "dialogue-text");
+            }
+        }
+
+        /* --- BOUTIQUE --- */
+        function openShop() {
+            document.getElementById('avatar').textContent = "🧙‍♂️";
+            typeWriter("Marchand: 'Bienvenue ! Que veux-tu acheter ?'", "dialogue-text");
+
+            setButtons([
+                { text: "Acheter Potion (10 Or)", action: () => buyItem('potion', 10) },
+                { text: "Retourner au Village", action: showMenu }
+            ]);
+        }
+
+        function buyItem(item, price) {
+            if (player.gold >= price) {
+                playSound('win');
+                player.gold -= price;
+                if (item === 'potion') player.potions++;
+                updateUI();
+                typeWriter("Achat réussi !", "dialogue-text");
+            } else {
+                typeWriter("Tu n'as pas assez d'or !", "dialogue-text");
+            }
+        }
+
+        /* --- UTILITAIRE DE BOUTONS --- */
+        function setButtons(buttons) {
+            const controls = document.getElementById('controls');
+            controls.innerHTML = "";
+            buttons.forEach(b => {
+                const btn = document.createElement('button');
+                btn.className = "btn";
+                btn.textContent = b.text;
+                btn.onclick = () => {
+                    playSound('click');
+                    b.action();
+                };
+                controls.appendChild(btn);
+            });
+        }
+
+        function resetGame() {
+            localStorage.removeItem('rpg_save');
+            player = { name: "Voyageur", hp: 30, maxHp: 30, gold: 20, lvl: 1, xp: 0, potions: 2 };
+            showMenu();
+        }
+
+        /* --- INITIALISATION --- */
+        const savedData = localStorage.getItem('rpg_save');
+        if (savedData) {
+            player = JSON.parse(savedData);
+        }
+        showMenu();
     </script>
 </body>
 </html>
+
